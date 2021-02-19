@@ -383,7 +383,7 @@ NAV2D.OccupancyGridClientNav = function(options) {
   function init() {
     // Connect to ROS.
     var ros = new ROSLIB.Ros({
-      url : 'ws://localhost:9090'
+      url : 'ws://192.168.0.16:9090'
     });
 
     // Create the main viewer.
@@ -401,11 +401,38 @@ NAV2D.OccupancyGridClientNav = function(options) {
       robot_pose: '/odom',
       serverName : '/move_base'
     });
+
+    // Initialize the teleop.
+    var teleop = new KEYBOARDTELEOP.Teleop({
+      ros : ros,
+      topic : '/cmd_vel'
+    });
+
+    // Create a UI slider using JQuery UI.
+    $('#speed-slider').slider({
+      range : 'min',
+      min : 0,
+      max : 100,
+      value : 50,
+      slide : function(event, ui) {
+        // Change the speed label.
+        $('#speed-label').html('Speed: ' + ui.value + '%');
+        // Scale the speed.
+        teleop.scale = (ui.value / 100.0);
+      }
+    });
+
+    // Set the initial speed .
+    $('#speed-label').html('Speed: ' + ($('#speed-slider').slider('value')) + '%');
+    teleop.scale = ($('#speed-slider').slider('value') / 100.0);
+
   }
 </script>
 </head>
 
 <body onload="init()">
+  <div id="speed-label"></div>
+  <div id="speed-slider"></div>
   <h1>Simple Navigation Example</h1>
   <div id="nav"></div>
 </body>
