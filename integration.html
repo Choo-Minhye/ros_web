@@ -32,24 +32,7 @@
       REVISION: '0.3.0'
     };
 
-    /**
-     * @author Russell Toris - rctoris@wpi.edu
-     */
 
-    /**
-     * A OccupancyGridClientNav uses an OccupancyGridClient to create a map for use with a Navigator.
-     *
-     * @constructor
-     * @param options - object with following keys:
-     *   * ros - the ROSLIB.Ros connection handle
-     *   * topic (optional) - the map meta data topic to listen to
-     *   * image - the URL of the image to render
-     *   * serverName (optional) - the action server name to use for navigation, like '/move_base'
-     *   * actionName (optional) - the navigation action name, like 'move_base_msgs/MoveBaseAction'
-     *   * rootObject (optional) - the root object to add the click listeners to and render robot markers to
-     *   * withOrientation (optional) - if the Navigator should consider the robot orientation (default: false)
-     *   * viewer - the main viewer to render to
-     */
     NAV2D.ImageMapClientNav = function (options) {
       var that = this;
       options = options || {};
@@ -86,25 +69,7 @@
       });
     };
 
-    /**
-     * @author Russell Toris - rctoris@wpi.edu
-     * @author Lars Kunze - l.kunze@cs.bham.ac.uk
-     */
 
-    /**
-     * A navigator can be used to add click-to-navigate options to an object. If
-     * withOrientation is set to true, the user can also specify the orientation of
-     * the robot by clicking at the goal position and pointing into the desired
-     * direction (while holding the button pressed).
-     *
-     * @constructor
-     * @param options - object with following keys:
-     *   * ros - the ROSLIB.Ros connection handle
-     *   * serverName (optional) - the action server name to use for navigation, like '/move_base'
-     *   * actionName (optional) - the navigation action name, like 'move_base_msgs/MoveBaseAction'
-     *   * rootObject (optional) - the root object to add the click listeners to and render robot markers to
-     *   * withOrientation (optional) - if the Navigator should consider the robot orientation (default: false)
-     */
     NAV2D.Navigator = function (options) {
       var that = this;
       options = options || {};
@@ -142,10 +107,10 @@
         goal.send();
 
         // create a marker for the goal
-        var goalMarker = new ROS2D.NavigationArrow({
-          size: 15,
-          strokeSize: 1,
-          fillColor: createjs.Graphics.getRGB(255, 64, 128, 0.66),
+        var goalMarker = new ROS2D.ArrowShape({
+          size: 25,
+          strokeSize: 4,
+          fillColor: createjs.Graphics.getRGB(255, 48, 0, 0.66),
           pulse: true
         });
         goalMarker.x = pose.position.x;
@@ -169,10 +134,10 @@
       }
 
       // marker for the robot
-      var robotMarker = new ROS2D.NavigationArrow({
+      var robotMarker = new ROS2D.ArrowShape({
         size: 25,
-        strokeSize: 1,
-        fillColor: createjs.Graphics.getRGB(255, 128, 0, 0.66),
+        strokeSize: 4,
+        fillColor: createjs.Graphics.getRGB(255, 64, 128, 0.66),
         pulse: true
       });
       // wait for a pose to come in first
@@ -205,7 +170,7 @@
 
       if (withOrientation === false) {
         // setup a double click listener (no orientation)
-        this.rootObject.addEventListener('dblclick', function (event) {
+        this.rootObject.addEventListener('click', function (event) {
           // convert to ROS coordinates
           var coords = stage.globalToRos(event.stageX, event.stageY);
           var pose = new ROSLIB.Pose({
@@ -249,7 +214,7 @@
                 size: 25,
                 strokeSize: 1,
                 fillColor: createjs.Graphics.getRGB(0, 255, 0, 0.66),
-                pulse: false
+                pulse: true
               });
 
               xDelta = currentPosVec3.x - positionVec3.x;
@@ -324,25 +289,7 @@
       }
     };
 
-    /**
-     * @author Russell Toris - rctoris@wpi.edu
-     */
 
-    /**
-     * A OccupancyGridClientNav uses an OccupancyGridClient to create a map for use with a Navigator.
-     *
-     * @constructor
-     * @param options - object with following keys:
-     *   * ros - the ROSLIB.Ros connection handle
-     *   * topic (optional) - the map topic to listen to
-     *   * rootObject (optional) - the root object to add this marker to
-     *   * continuous (optional) - if the map should be continuously loaded (e.g., for SLAM)
-     *   * serverName (optional) - the action server name to use for navigation, like '/move_base'
-     *   * actionName (optional) - the navigation action name, like 'move_base_msgs/MoveBaseAction'
-     *   * rootObject (optional) - the root object to add the click listeners to and render robot markers to
-     *   * withOrientation (optional) - if the Navigator should consider the robot orientation (default: false)
-     *   * viewer - the main viewer to render to
-     */
     NAV2D.OccupancyGridClientNav = function (options) {
       var that = this;
       options = options || {};
@@ -382,7 +329,6 @@
 
 
   </script>
-  <!--<script type="text/javascript" src="https://static.robotwebtools.org/nav2djs/current/nav2d.js"></script>-->
 
 
   <script type="text/javascript">
@@ -405,7 +351,7 @@
       var viewer = new ROS2D.Viewer({
         divID: 'nav',
         width: 750,
-        height: 800
+        height: 700
       });
 
       // Setup the nav client.
@@ -510,8 +456,8 @@
 
         manager.on('move', function (event, nipple) {
             console.log("Moving");
-            max_linear = 1.0; // m/s
-            max_angular = 1.0; // rad/s
+            max_linear = 0.5; // m/s
+            max_angular = 0.6; // rad/s
             max_distance = 75.0; // pixels;
             linear_speed = Math.sin(nipple.angle.radian) * max_linear * nipple.distance/max_distance;
             angular_speed = -Math.cos(nipple.angle.radian) * max_angular * nipple.distance/max_distance;
@@ -542,7 +488,7 @@
   <div id="speed-label"></div>
   <div id="speed-slider"></div>
 
-  <h1>Simple Navigation Example</h1>
+  <h1>♥Control with Web♥</h1>
   <div id="nav"></div>
   <div id="mjpeg"></div>
   <div id="zone_joystick" style="position: fixed; top: 40%; left: 80%; "></div>
