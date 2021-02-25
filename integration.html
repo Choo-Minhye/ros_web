@@ -211,9 +211,9 @@
               var currentPos = stage.globalToRos(event.stageX, event.stageY);
               var currentPosVec3 = new ROSLIB.Vector3(currentPos);
 
-              orientationMarker = new ROS2D.NavigationArrow({
-                size: 25,
-                strokeSize: 1,
+              orientationMarker = new ROS2D.ArrowShape({
+                size: 35,
+                strokeSize: 0.5,
                 fillColor: createjs.Graphics.getRGB(0, 255, 0, 0.66),
                 pulse: true
               });
